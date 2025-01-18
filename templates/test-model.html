@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title_page }}</title>
+</head>
+<body>
+    <h1>Flood Prediction</h1>
+    
+    <!-- Form untuk memilih lokasi dan input data -->
+    <form method="POST">
+        <label for="lokasi">Pilih Lokasi</label>
+        <select for="lokasi" id="lokasi" name="lokasi" class="form-control form-control-sm">
+            {% for lokasi in lokasi_list %}
+                <option value="{{ lokasi[1] }}">{{ lokasi[1] }}</option>
+            {% endfor %}
+        </select>
+        
+         <br><br>
+        
+        <label for="curah_hujan">Curah Hujan (mm):</label>
+        <input type="number" step="any" name="curah_hujan" id="curah_hujan" required><br><br>
+        
+        <label for="flowmeter">Debit Aliran Air (L/menit):</label>
+        <input type="number" step="any" name="flowmeter" id="flowmeter" required><br><br>
+        
+        <label for="inclinometer">Kemiringan Tanah (derajat):</label>
+        <input type="number" step="any" name="inclinometer" id="inclinometer" required><br><br>
+        
+        <button type="submit">Predict</button>
+    </form>
+
+    <br><br>
+    
+    <a href="/lihat-prediksi">Lihat Prediki</a> <br><br>
+    <a href="/tambah-lokasi">Tambah Lokasi</a>
+
+    <!-- Menampilkan hasil prediksi -->
+    <h3>Hasil Prediksi</h3>
+    {% if prediction %}
+        <p>Lokasi: {{ lokasi_name }}</p>
+        <p>Curah Hujan: {{ curah_hujan }} mm</p>
+        <p>Debit Aliran Air: {{ flowmeter }} L/menit</p>
+        <p>Kemiringan Tanah: {{ inclinometer }} derajat</p>
+        <h2>Prediction Result: {{ prediction }}</h2>
+    {% endif %}
+    
+    <!-- Menampilkan pesan error jika ada -->
+    {% if error %}
+        <h5 style="color: red;">{{ error }}</h5>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+{% include 'header.html' %}
+
+<div class="content-wrapper">
+    <div class="dashboard-header text-center">
+        <div class="container">
+            <h1>Flood Prediction Dashboard</h1>
+            <!-- <p>&#9200;<span id="time"></span> &#8214; &mdash; &ndash; &#x231B; <span id="date"></span></p> -->
+            <p><span id="time"></span> &ndash; <span id="date"></span></p>
+            <div class="row mt-3">
+                <div class="col-md-6 offset-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <select class="form-select" aria-label="Select Location" id="locationSelect">
+                             {% for lokasi in lokasi_list %}
+                            <option 
+                                value="{{ lokasi.nama_lokasi }}" 
+                                {% if lokasi.nama_lokasi == selected_lokasi %}selected{% endif %}
+                            >
+                                {{ lokasi.nama_lokasi }}
+                            </option>
+                             {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+        {% if latest_data %}
+        <div class="container">
+            <div class="row">
+                <h6><small class="muted" style="font-style: italic;">Terakhir Pembaharuan Data: {{latest_data.tanggal}} , {{latest_data.jam}}</small></h6>
+            </div>
+        </div>
+        <!-- container dashboard content -->
+        <div class="container">
+
+            <!-- row 3 small box  -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card flood-risk-card {% if latest_data.output == 'Berpotensi Banjir' %}flood-risk-high bg-danger{% else %}bg-success{% endif %}">
+                        <div class="card-body">
+                            <h4 class="card-title font-weight-bold">
+                                <i class="{% if latest_data.output == 'Berpotensi Banjir' %}fas fa-exclamation-triangle{% else %}fas fa-check{% endif %}"></i> 
+                                Flood Risk
+                            </h4>
+                            <p class="card-text">
+                                <strong style="font-size: 15px;">{{ latest_data.output }}</strong><br>
+                                {% if latest_data.output == 'Berpotensi Banjir' %}
+                                Waspada! Daerah ini berpotensi banjir 
+                                {% else %}
+                                Daerah ini aman dari potensi banjir 
+                                {% endif %}
+                            </p>
+                            <i class="fas fa-water card-icon"></i>
+                        </div>
+                    </div>
+                </div>
+      
+                <div class="col-md-4">
+                    <div class="card flood-risk-card info-card" 
+                        {% if latest_data.output == 'Berpotensi Banjir' %}
+                            style="border-left: 6px solid #bd2130;"
+                        {% else %}
+                            style="border-left: 6px solid #1e7e34;"
+                        {% endif %}
+                    >
+                        <div class="card-body">
+                            <h4 class="card-title font-weight-bold"><i class="fas fa-tint"></i> Debit Air</h4>
+                            <div class="card-text">
+                                <div>
+                                    <h2 class="mb-0">{{ latest_data.flowmeter }} m</h2>
+                                    <small class="text-muted" >
+                                        <i>Last Update: </i> 
+                                        {{latest_data.jam}}
+                                    </small>
+                                </div>
+                                <i class="fas fa-chart-line card-icon text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+      
+                <div class="col-md-4">
+                    <div class="card flood-risk-card info-card"
+                                    {% if latest_data.output == 'Berpotensi Banjir' %}
+                                        style="border-left: 6px solid #bd2130;"
+                                     {% else %}
+                                        style="border-left: 6px solid #1e7e34;"
+                                     {% endif %} >
+                        <div class="card-body">
+                            <h4 class="card-title font-weight-bold"><i class="fas fa-cloud-rain"></i> Rainfall</h4>
+                            <div class="card-text">
+                                <div>
+                                    <h2 class="mb-0">{{ latest_data.curah_hujan }} mm</h2>
+                                    <small class="text-muted" >
+                                            <i>Last Update: </i> 
+                                            {{latest_data.jam}} 
+                                    </small>
+                                </div>
+                                <i class="fas fa-umbrella card-icon text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / end row 3 small box  -->
+
+            <!-- row Grafik flowmeter dan curahhujan  -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card info-card-grafik">
+                        <div class="card-body">
+                            <h4 class="card-title font-weight-bold"><i class="fas fa-chart-area"></i> Debit Aliran Air</h4>
+                            <canvas id="flowMeterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card info-card-grafik">
+                        <div class="card-body">
+                            <h4 class="card-title font-weight-bold"><i class="fas fa-chart-line"></i> Intensitas Curah Hujan</h4>
+                            <canvas id="rainfallChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / end row Grafik flowmeter dan curahhujan -->
+
+            <!-- row Contact Emergency -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card info-card">
+                        <div class="card-body">
+                            <!-- <h4><i class="fas fa-bell"></i></h4> -->
+                            <div class="alert {% if latest_data.output == 'Berpotensi Banjir' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                                <strong>
+                                    {% if latest_data.output == 'Berpotensi Banjir' %}
+                                    Hati-hati !!! 
+                                    {% else %}
+                                    Safe Status! 
+                                    {% endif %}
+                                </strong> 
+                                    {% if latest_data.output == 'Berpotensi Banjir' %}
+                                    Daerah ini berpotensi terkena banjir .
+                                    {% else %}
+                                    Daerah ini aman dari potensi banjir..
+                                    {% endif %}
+                            </div>
+                            <div class="row"> 
+                                <div class="col-md-12"> 
+                                    <h5>  Contact Emergency Services:</h5> 
+                                    <div class="d-flex justify-content-between flex-wrap"> 
+                                        <button class="btn btn-success m-1"><i class="fas fa-ambulance"></i> Rumah Sakit (118)</button> 
+                                        <button class="btn bg-primary m-1"><i class="fas fa-life-ring"></i> Basarnas (115)</button> 
+                                        <button class="btn btn-warning m-1"><i class="fas fa-bolt"></i> PLN - Electricity (123)</button> 
+                                        <button class="btn btn-danger m-1"><i class="fas fa-fire-extinguisher"></i> Pemadam Kebakaran (113)</button> 
+                                        <button class="btn bg-orange m-1"><i class="fas fa-phone"></i> Kantor Polisi (110)</button> 
+                                    </div> 
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / end row contact emergency -->
+        </div>
+        <!-- / end container dashboard content -->
+
+        
+        <!-- container end container no data - lokasi -->
+            {% else %}
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning text-center" role="alert">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Tidak Ada Data</h4>
+                        <p>Tidak terdapat data prediksi untuk lokasi "{{ selected_lokasi }}" pada saat ini.</p>
+                        <p>Silakan pilih lokasi lain atau hubungi administrator untuk informasi lebih lanjut.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- / end container no data -lokasi -->
+             {% endif %}
+</div>
+<!-- /end content wrapper -->
+
+<script>
+    document.getElementById('locationSelect').addEventListener('change', function() {
+        window.location.href = '/dashboard3?location=' + encodeURIComponent(this.value);
+    });
+</script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js for graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // FlowMeter Chart
+    new Chart(document.getElementById('flowMeterChart'), {
+        type: 'line',
+        data: {
+            labels: {{ flowmeter_time | tojson }},
+            datasets: [{
+                label: 'Debit Aliran - Flowmeter',
+                data: {{ flowmeter_values | tojson }},
+                
+                tension: 0.1,
+                borderColor: 'rgba(54, 162, 235, 1)', // Warna biru
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+           
+            scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Jam',
+                            font: {
+                                    size: 12, // Ukuran font teks judul sumbu X
+                                    // weight: 'bold'
+                                }
+                        },
+
+                        // beginAtZero: true
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Debit Aliran (m³/s)',
+                            font: {
+                                    size: 12, // Ukuran font teks judul sumbu X
+                                    // weight: 'bold'
+                                }
+                        },
+                        beginAtZero: true
+                    }
+                    }
+        }
+
+    });
+
+    // Rainfall Intensity Chart
+    new Chart(document.getElementById('rainfallChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ rainfall_time | tojson | safe }},
+            datasets: [{
+                label: 'Curah Hujan - Raingauge',
+                data: {{ rainfall_intensity | tojson | safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Jam',
+                            font: {
+                                    size: 12, // Ukuran font teks judul sumbu X
+                                    // weight: 'bold'
+                                }
+                        },
+
+                        // beginAtZero: true
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Curah Hujan (mm/h)',
+                            font: {
+                                    size: 12, // Ukuran font teks judul sumbu X
+                                    // weight: 'bold'
+                                }
+                        },
+                        beginAtZero: true
+                    }
+                    }
+        }
+    });
+</script>
+
+<script>
+    // Fungsi untuk mendapatkan waktu real-time
+    function updateDateTime() {
+        const now = new Date();
+
+        // Daftar nama hari dan bulan
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        // Format tanggal (Day, Date Month Year)
+        const day = days[now.getDay()];  // Mendapatkan hari dalam bentuk teks (misal: "Monday")
+        const date = now.getDate();  // Mendapatkan tanggal
+        const month = months[now.getMonth()];  // Mendapatkan bulan dalam bentuk teks
+        const year = now.getFullYear();  // Mendapatkan tahun
+
+        // Format waktu (Hour:Minute:Second)
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
+
+        // Menampilkan tanggal dan waktu di halaman
+        document.getElementById('date').textContent = ` ${day}, ${date} ${month} ${year} `;
+        
+        document.getElementById('time').textContent = `${timeString}`;
+    }
+
+    // Memanggil fungsi updateDateTime setiap detik
+    setInterval(updateDateTime, 1000);
+</script>
+
+{% include 'footer.html' %}

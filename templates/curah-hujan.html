@@ -1,0 +1,141 @@
+{% include 'header.html' %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Grafik Curah Hujan</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Curah Hujan</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- ISI DARI KONTENT -->
+  <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="card">
+            
+            <div class="card-body">
+                <!-- Form untuk memilih lokasi dan tanggal -->
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Pilih Lokasi</label>
+                                <select name="lokasi" class="form-control" required>
+                                    {% for loc in lokasi_list %}
+                                        <option value="{{ loc.id }}" 
+                                            {% if default_lokasi and loc.id == lokasi_dipilih.id %}selected{% endif %}>
+                                            {{ loc.nama_lokasi }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Pilih Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" 
+                                       value="{{  tanggal }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-success  form-control">Tampilkan Grafik</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            <!-- Pesan Error -->
+            {% if pesan_error %}
+            <div class="alert alert-warning">
+                {{ pesan_error }}
+            </div>
+            {% endif %}
+    
+            <!-- Grafik Curah Hujan -->
+            {% if grafik_data %}
+            <div class="chart-container" style="position: relative; height:400px;">
+                <canvas id="curahHujanChart"></canvas>
+            </div>
+            {% endif %}
+            </div>
+          </div>
+
+        </div>
+    </div>
+
+  </section>
+</div> 
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Informasi Curah Hujan</h5>
+              <button type="button" class="close" data-dismiss="modal">
+                  <span>&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <!-- Konten modal akan diisi secara dinamis -->
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Tambahkan script untuk Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if grafik_data %}
+    // Persiapkan data untuk chart
+    var chartData = {
+        labels: [{% for data in grafik_data %}'{{ data.jam }}'{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Curah Hujan',
+            data: [{% for data in grafik_data %}{{ data.curah_hujan }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+
+    // Buat chart
+    var ctx = document.getElementById('curahHujanChart').getContext('2d');
+    var curahHujanChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Curah Hujan'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Jam'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+
+{% include 'footer.html' %}
+

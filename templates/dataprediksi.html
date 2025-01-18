@@ -1,0 +1,114 @@
+{% include 'header.html' %}
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+            <h1 class="m-0">Data Prediksi</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Tabel Data Prediksi</li>
+            </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+  
+ <!-- ISI DARI KONTENT -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">  
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" >
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Pilih Lokasi</label>
+                                    <select class="form-select" name="lokasi_id" id="lokasi" required>
+                                        {% for lokasi in lokasi_list %}
+                                            <option value="{{ lokasi[0] }}" 
+                                                {% if lokasi_id_selected == lokasi[0] | string %}selected{% endif %}>
+                                                {{ lokasi[1] }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="tanggal">Pilih Tanggal:</label>
+                                    <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ tanggal_selected if tanggal_selected else '' }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="submit" class="btn btn-success form-control" >Tampilkan Prediksi</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </form>
+                 
+
+                    {% if prediksi_list %} 
+                   
+                    <table id="example2" class="table table-bordered table-hover">
+                        <thead style=" border: solid 1px black">
+                            <tr style="text-align:center;">
+                                <th style="width: 10px">#</th>
+                                <th>Tanggal</th>
+                                <th>Jam</th>
+                                <th>Curah Hujan (mm/h)</th>
+                                <th>Kemiringan Tanah (&deg;)</th>
+                                <th>Debit Aliran (m&sup3;/s)</th>
+                                <th>Prediksi</th>
+                            </tr>
+                            </thead>
+                              
+                            <tbody style="word-wrap: break-word;">
+                            {% for prediksi in prediksi_list %}
+                                <tr >
+                                    <td  style="text-align:center;"> {{loop.index}}. </td>
+                                    <td>{{ prediksi[0] }}</td>
+                                    <td>{{ prediksi[1] }}</td>
+                                    <td>{{ prediksi[2] }}</td>
+                                    <td>{{ prediksi[3] }}</td>
+                                    <td>{{ prediksi[4] }}</td>
+                                    <td><span class="badge {{ 'bg-danger' if prediksi[5] == 'Berpotensi Banjir' else 'bg-success' }}">{{ prediksi[5] }}</span></td>
+                               
+                            {% endfor %}
+                            {% else %}
+                            
+                            <p class="alert alert-warning">Tidak ada data prediksi untuk lokasi dan tanggal yang dipilih.</p>
+                      
+                            {% endif %}
+                            </tr>
+                            </tbody>
+                        
+                    </table>
+                    
+         
+                   
+   
+                </div>
+            </div>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+{% include 'footer.html' %}

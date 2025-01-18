@@ -1,0 +1,310 @@
+{% include 'header.html' %}
+
+<div class="content-wrapper" >
+        <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+              <h2 class="m-0">Hello, <b><i>{{ username }}!</i></b></h2><h6 class="m-0">You can manage this system<h6>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item">
+                 <a type="button" class="btn bg-gradient-danger text-white" href="/logout">Log Out</a>
+              </li>
+            </ol>
+
+              {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div>
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                              {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+              {% endwith %}
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+   <!-- ISI DARI KONTENT -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Left col -->
+
+                <section class="col-lg-7 connectedSortable">
+
+                    <!-- Card 1: Admin Management -->
+                    <div class="card">
+                      <div class="card-header bg-purple text-white">
+                        <h3 class="card-title">
+                          <i class="fas fa-user mr-1"></i>
+                          Admin Management
+                        </h3>
+                        <div class="card-tools">
+                          <ul class="nav nav-pills ml-auto">
+                            <!-- Tab: List Admin -->
+                            <li class="nav-item">
+                              <a class="nav-link active text-white" href="#list-admin" data-toggle="tab">Daftar Admin</a>
+                            </li>
+                            <!-- Tab: Add Admin -->
+                            <li class="nav-item">
+                              <a class="nav-link text-white" href="#edit" data-toggle="tab">Tambah Admin</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <div class="tab-content p-0">
+                          <!-- Tab Content: List Admin -->
+                          <div class="tab-pane active" id="list-admin" style="position: relative;">
+                            <div class="table-responsive">
+                              <table class="table table-striped table-valign-middle">
+                                <thead>
+                                  <tr>
+                                    <th>No</th>
+                                    <th>Username</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    {% for admin in daftar_admin %}
+                                    <td>{{ loop.index}}</td>
+                                    <td>{{ admin.username }}</td>
+                                    <td>{{ admin.password }}</td>
+                                    <td>{{ admin.role }}</td>
+                                    
+                                    <td>
+                                      <form method="POST" action="{{ url_for('delete_admin') }}">
+                                        <input type="hidden" name="admin_id" value="{{ admin.id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                      </form>
+                                    </td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <!-- Tab Content: Add Admin -->
+                          <div class="tab-pane" id="edit" style="position: relative;">
+                            <form method="POST" id="" action="{{ url_for('add_admin') }}">
+                                <div class="form-group">
+                                  <label>Username</label>
+                                  <input type="text" name="username" class="form-control" required>
+                              </div>
+
+                              <div class="form-group">
+                                  <label>Password</label>
+                                  <input type="text" name="password" class="form-control" required>
+                              </div>
+
+                              <div class="form-group">
+                                <label>Role</label>
+                                <select name="role" class="form-control" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
+                                </select>
+                            </div>
+                              <button type="submit" class="btn bg-purple mt-3">Tambah Admin</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    
+                    
+                  <!-- DAFTAR LOKASI -->
+                  <div class="card">
+                    <div class="card-header bg-gradient-success">
+                        <h3 class="card-title text-white">
+                            <i class="fas fa-map-marker-alt mr-1 text-white"></i>
+                            Lokasi
+                        </h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- Tab Navigasi -->
+                        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="daftar-tab" data-toggle="tab" href="#daftar" role="tab" aria-controls="daftar" aria-selected="true">Daftar Lokasi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tambah-tab" data-toggle="tab" href="#tambah" role="tab" aria-controls="tambah" aria-selected="false">Tambah Lokasi</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="custom-tabs-one-tabContent">
+                            <!-- Tab Daftar Lokasi -->
+                            <div class="tab-pane fade show active" id="daftar" role="tabpanel" aria-labelledby="daftar-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Lokasi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for loc in daftar_lokasi %}
+                                            <tr>
+                                                <td>{{ loc.id }}</td>
+                                                <td>{{ loc.nama_lokasi }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                            <!-- Tab Tambah Lokasi -->
+                            <div class="tab-pane fade" id="tambah" role="tabpanel" aria-labelledby="tambah-tab">
+                                <form method="POST" action="{{ url_for('add_location') }}" id="">
+                                    <div class="form-group"> <br>
+                                        <label for="nama-lokasi">Nama Lokasi</label>
+                                        <input type="text" id="nama-lokasi" name="nama-lokasi" class="form-control" placeholder="Masukkan nama lokasi" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                
+                  <!-- /. end card daftar lokasi -->
+
+                  
+                  
+                  
+
+
+
+
+                </section>
+                <!-- /.Left col -->
+              
+                <section class="col-lg-5 connectedSortable">
+
+                  <!-- COBA PREDIKSI -->
+                  <div class="card shadow-md">
+                     
+                    <div class="card-header bg-gradient-orange text-white">
+                      <h3 class="card-title">
+                          <i class="ion ion-clipboard mr-1 text-white"></i>
+                          Coba Prediksi
+                      </h3>
+                    </div>
+                    <div class="card-body">
+                   
+                        <form method="POST" action="{{ url_for('trypredict') }}" id="">
+                            <!-- Pilih Lokasi -->
+                            <form id="prediction-form">
+                              <div class="mb-3">
+                                  <label class="form-label">Pilih Location</label>
+                                  <select name="lokasi_id" class="form-select" required>
+                                    {% for loc in daftar_lokasi %}
+                                    <option value="{{ loc.id }}">{{ loc.nama_lokasi }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">Curah Hujan (mm/h)</label>
+                                  <input type="number" step="0.01" class="form-control" name="curah_hujan" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">Debit Air (L/minute)</label>
+                                  <input type="number" step="0.01" class="form-control" name="flowmeter" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">Kemiringan tanah (degrees)</label>
+                                  <input type="number" step="0.01" class="form-control" name="inclinometer" required>
+                              </div>
+                              <div class="mb-3 form-check">
+                                <input type="checkbox" name="save_to_db" id="save_to_db" class="form-check-input"  value="1">
+                                <label for="save_to_db" class="form-check-label">Simpan ke Database</label>
+                              </div>
+
+
+                            <div class="" style="color: #c57903;">
+                              <i class="fas fa-warning"></i>
+                              <small >
+                                Data yang disimpan ke database akan otomatis menggunakan tanggal dan waktu saat ini sebagai referensi.
+                              </small>
+                            </div>
+                              <br>
+                            <!-- Tombol Prediksi -->
+                            <div class="text-center">
+                                <button type="submit" class="btn bg-orange text-white btn-outline-black btn-md shadow-md">Prediksi</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+
+                    <div class="card-body">
+
+                      {% if recent_prediction %}
+                      <div class="alert {% if recent_prediction.output == 'Berpotensi Banjir' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show mt-3" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h5>{{ recent_prediction.output }}</h5>
+                          <p class="mb-0">
+                              <small> Lokasi          :  {{ recent_prediction.lokasi }}</small><br>
+                              <small> Debit Air       :  {{ recent_prediction.flowmeter }} L/minute</small><br>
+                              <small> Curah Hujan     :  {{ recent_prediction.curah_hujan }} mm/h</small><br>
+                              <small> Kemiringan Tanah:  {{ recent_prediction.inclinometer }} degrees</small>
+                          </p>
+                      </div>
+                      {% endif %}
+                  
+                      {% if error %}
+                      <div class="alert alert-warning alert-dismissible">
+                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                          <h6><i class="icon fas fa-exclamation-circle"></i> Error</h6>
+                          <p>{{ error }}</p>
+                      </div>
+                      {% endif %}
+                  </div>
+                  
+                </div>
+
+                
+
+                </section>
+                <!-- right col -->
+
+
+            </div>
+        </div>
+        
+
+    
+
+    </section>
+
+</div>
+
+
+<!-- Custom JavaScript -->
+
+
+<!-- jQuery, Popper.js, and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+{% include 'footer.html' %}

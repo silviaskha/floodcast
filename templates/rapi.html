@@ -1,0 +1,87 @@
+{% include 'header.html' %}
+
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+            <h1 class="m-0">Data Prediksi</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Tabel Data Prediksi</li>
+            </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    
+   <!-- ISI DARI KONTENT -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-12">  
+            <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div>
+            </div>
+    </div>
+
+    </section>
+
+</div>
+{% include 'footer.html' %}
+
+
+<canvas id="myChart"></canvas>
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ jam | tojson | safe }},
+            datasets: [{
+                label: 'Debit Aliran/Flowmeter',
+                data: {{ flowmeter | tojson | safe }},
+                borderColor: 'rgba(54, 162, 235, 1)', // Warna biru
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Warna biru transparan
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 99, 132)'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Jam'
+                    },
+                    beginAtZero: true
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Debit Aliran/Flowmeter'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

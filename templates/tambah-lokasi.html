@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Lokasi</title>
+</head>
+<body>
+    <h1>Tambah Lokasi</h1>
+    <form method="POST">
+        <label for="lokasi">Nama Lokasi:</label>
+        <input type="text" name="lokasi" id="lokasi" required><br><br>
+        <button type="submit">Tambah Lokasi</button>
+    </form>
+
+    <a href="/test-model">Test Model</a>
+    <a href="/lihat-prediksi">lihat prediksi</a>
+    <br>
+    <br>
+
+    {% if success %}
+        <h3 style="color: green;">{{ success }}</h3>
+    {% endif %}
+    {% if error %}
+        <h3 style="color: red;">{{ error }}</h3>
+    {% endif %}
+</body>
+</html>

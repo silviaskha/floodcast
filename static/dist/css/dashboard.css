@@ -1,0 +1,48 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.dashboard-header {
+    background-color: #126374;
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+.flood-risk-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+.flood-risk-high {
+    background-color: #dc3545;
+    color: white;
+}
+.flood-risk-moderate {
+    background-color: #ffc107;
+    color: dark;
+}
+.flood-risk-low {
+    background-color: #28a745;
+    color: white;
+}
+.info-card {
+    background-color: white;
+    /* border-radius: 10px; */
+    /* padding: 20px; */
+    /* margin-bottom: 20px; */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.info-card-grafik {
+    background-color: white;
+    border-radius: 5px; 
+    padding: 5px; 
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.card-icon {
+    font-size: 3rem;
+    opacity: 0.6;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lihat Prediksi</title>
+</head>
+<body>
+    <a href="/test-model">Test</a> <br>
+    <a href="/tambah-lokasi">Tambah Lokasi</a>
+    <h1>Data Prediksi</h1>
+
+    {% if lokasi_name_selected %}
+        <h2>Lokasi: {{ lokasi_name_selected }}</h2>
+    {% else %}
+        <h2>Silakan pilih lokasi untuk melihat data prediksi</h2>
+    {% endif %}
+
+    <form method="POST">
+        <label for="lokasi">Pilih Lokasi:</label>
+        <select name="lokasi_id" id="lokasi">
+            {% for lokasi in lokasi_list %}
+                <option value="{{ lokasi[0] }}" 
+                    {% if lokasi_id_selected == lokasi[0] | string %}selected{% endif %}>
+                    {{ lokasi[1] }}
+                </option>
+            {% endfor %}
+        </select>
+        
+        <!-- Input untuk memilih tanggal -->
+        <label for="tanggal">Pilih Tanggal:</label>
+        <input type="date" name="tanggal" id="tanggal" value="{{ tanggal_selected if tanggal_selected else '' }}">
+        
+        <button type="submit">Tampilkan Prediksi</button>
+    </form>
+
+    {% if prediksi_list %}
+        <h3>Hasil Prediksi:</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Jam</th>
+                    <th>Curah Hujan (mm)</th>
+                    <th>Debit Aliran Air (L/menit)</th>
+                    <th>Kemiringan Tanah (°)</th>
+                    <th>Output</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prediksi in prediksi_list %}
+                    <tr>
+                        <td>{{ prediksi[0] }}</td>
+                        <td>{{ prediksi[1] }}</td>
+                        <td>{{ prediksi[2] }}</td>
+                        <td>{{ prediksi[3] }}</td>
+                        <td>{{ prediksi[4] }}</td>
+                        <td>{{ prediksi[5] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Tidak ada data prediksi untuk lokasi dan tanggal yang dipilih.</p>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
